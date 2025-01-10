@@ -47,19 +47,5 @@ namespace ToDoListApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        [HttpPatch("passwordModification")]
-        public ActionResult changePassword(string email, string password)
-        {
-            try
-            {
-                var client = _clientService.validateLogin(email, password);
-                return Ok(new { Token = _jwtTokenService.GenerateToken(client) });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
     }
 }

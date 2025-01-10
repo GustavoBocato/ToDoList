@@ -25,8 +25,7 @@ namespace ToDoListApp.Services
 
             var claims = new[]
             {
-            new Claim(JwtRegisteredClaimNames.Name, client.name),
-            new Claim(JwtRegisteredClaimNames.Email, client.email),
+            new Claim(JwtRegisteredClaimNames.Sub, client.id.ToString()),
             new Claim(JwtRegisteredClaimNames.Iat, now.ToString()),
             };
 
