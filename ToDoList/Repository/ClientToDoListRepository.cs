@@ -6,7 +6,6 @@ namespace ToDoListApp.Repository
     {
         public void create(ClientToDoList clientToDoList) 
         {
-            int aux = 0;
         }
     }
 }
