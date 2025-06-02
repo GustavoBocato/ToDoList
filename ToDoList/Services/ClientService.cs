@@ -49,21 +49,14 @@ namespace ToDoListApp.Services
             return client;
         }
 
-        public Client validatePasswordModification(String email)
+        public int validateOwner(String ownersEmail)
         {
-            Client client = _clientRepository.GetClientByEmail(email);
+            var owner = _clientRepository.GetClientByEmail(ownersEmail);
 
-            if (client is null)
-                throw new ArgumentException("O email entrado não consta na nossa base de dados.");
+            if (owner is null)
+                throw new ArgumentException("O email do dono da lista não corresponde a nenhum email de um cliente.");
 
-            return client;
-        }
-
-        public void changePassword(Client client, string password)
-        {
-            client.password = _passwordHasher.HashPassword(client, client.password);
-
-
+            return owner.id;
         }
     }
 }

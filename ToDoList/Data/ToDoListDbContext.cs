@@ -8,10 +8,10 @@ namespace ToDoListApp.Data
         public ToDoListDbContext(DbContextOptions<ToDoListDbContext> options) : base(options) { }
 
         // Define your DbSets (tables)
-        public DbSet<ToDoItem> todoitems { get; set; }
-        public DbSet<ToDoList> todolists { get; set; }
-        public DbSet<Client> clients { get; set; }
-        public DbSet<ClientToDoList> clienttodolists { get; set; }
+        public DbSet<ToDoItem> ToDoItems { get; set; }
+        public DbSet<ToDoList> ToDoLists { get; set; }
+        public DbSet<Client> Clients { get; set; }
+        public DbSet<ClientToDoList> ClientToDoLists { get; set; }
 
     }
 }

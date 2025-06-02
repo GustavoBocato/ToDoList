@@ -8,6 +8,6 @@ namespace ToDoListApp.Services
         public bool emailAlreadyRegistered(String email);
         public void registerClient(Client client);
         public Client validateLogin(String email, String password);
-
+        public int validateOwner(String ownersEmail);
     }
 }

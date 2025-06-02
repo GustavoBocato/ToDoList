@@ -4,6 +4,6 @@ namespace ToDoListApp.Services
 {
     public interface IToDoListService
     {
-        public void create(ToDoList toDoList);
+        public int create(ToDoList toDoList);
     }
 }

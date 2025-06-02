@@ -1,12 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ToDoListApp.Models
 {
+    [Table("todo_lists")]
     public class ToDoList
     {
-        public int id { get; set; }
+        [Column("id")]
+        public Guid Id { get; set; }
+
         [Required]
-        public string name { get; set; }
-        public string description { get; set; }
+        [Column("name")]
+        public string Name { get; set; }
+
+        [Column("description")]
+        public string Description { get; set; }
     }
 }

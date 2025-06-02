@@ -12,16 +12,16 @@ var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"];
 var issuer = jwtSettings["Issuer"];
 var audience = jwtSettings["Audience"];
-
-// Add services to the container.
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                      ?? Environment.GetEnvironmentVariable("DATABASE_URL");
 
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ToDoListDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 builder.Services.AddTransient<IClientService, ClientService>();
-builder.Services.AddTransient<IClientRepository, ClientRepository>();
+builder.Services.AddTransient<IClientRepository, Repository>();
 
 // Add Authentication services with JWT configuration
 builder.Services.AddAuthentication(options =>
@@ -84,12 +84,8 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

@@ -15,5 +15,10 @@ namespace ToDoListApp.Repository
             _dbContext.todolists.Add(toDoList);
             _dbContext.SaveChanges();
         }
+
+        public int retriveId(ToDoList toDoList) 
+        {
+            _dbContext.todolists.AsQueryable().FirstOrDefault(tdl => )
+        }
     }
 }

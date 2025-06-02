@@ -6,13 +6,16 @@ namespace ToDoListApp.Services
     public class ToDoListService : IToDoListService
     {
         private readonly IToDoListRepository _toDoListRepository;
-        public ToDoListService(IToDoListRepository toDoListRepository)
+        private readonly IClientToDoListRepository _clientToDoListRepository;
+        public ToDoListService(IToDoListRepository toDoListRepository, IClientToDoListRepository clientToDoListRepository)
         {
             _toDoListRepository = toDoListRepository;
+            _clientToDoListRepository = clientToDoListRepository;
         }
-        public void create(ToDoList toDoList) 
+        public int create(ToDoList toDoList) 
         {
             _toDoListRepository.create(toDoList);
+
         }
     }
 }

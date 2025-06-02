@@ -1,11 +1,20 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace ToDoListApp.Models
 {
+    [Table("clients")]
     public class Client
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string email { get; set; }
+        [Column("id")]
+        public Guid Id { get; set; }
 
-        public string password { get; set; }
+        [Column("name")]
+        public string Name { get; set; }
+
+        [Column("email")]
+        public string Email { get; set; }
+
+        [Column("password")]
+        public string Password { get; set; }
     }
 }
