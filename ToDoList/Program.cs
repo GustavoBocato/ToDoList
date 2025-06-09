@@ -17,13 +17,13 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<ToDoListDbContext>(options =>
+builder.Services.AddDbContext<ToDoDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddTransient<IClientService, ClientService>();
-builder.Services.AddTransient<IClientRepository, Repository>();
+builder.Services.AddTransient<IClientRepository, ClientRepository>();
+builder.Services.AddAutoMapper(typeof(Program));
 
-// Add Authentication services with JWT configuration
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -40,8 +40,7 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = issuer,
         ValidAudience = audience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
-        ClockSkew = TimeSpan.Zero // Optional: Prevent token expiration delay
-        
+        ClockSkew = TimeSpan.Zero
     };
 });
 

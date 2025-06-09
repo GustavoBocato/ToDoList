@@ -3,9 +3,9 @@ using ToDoListApp.Models;
 
 namespace ToDoListApp.Data
 {
-    public class ToDoListDbContext : DbContext
+    public class ToDoDbContext : DbContext
     {
-        public ToDoListDbContext(DbContextOptions<ToDoListDbContext> options) : base(options) { }
+        public ToDoDbContext(DbContextOptions<ToDoDbContext> options) : base(options) { }
 
         // Define your DbSets (tables)
         public DbSet<ToDoItem> ToDoItems { get; set; }

@@ -25,7 +25,7 @@ namespace ToDoListApp.Services
 
             var claims = new[]
             {
-            new Claim(JwtRegisteredClaimNames.Sub, client.id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Sub, client.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Iat, now.ToString()),
             };
 
@@ -36,7 +36,7 @@ namespace ToDoListApp.Services
                 issuer: _issuer,
                 audience: _audience,
                 claims: claims,
-                expires: now.AddMinutes(10),
+                expires: now.AddMinutes(20),
                 signingCredentials: creds
             );
 
