@@ -6,7 +6,7 @@ namespace ToDoListApp.Models
     public class ClientToDoList
     {
         [Column("id")]
-        public Guid Id { get; } = Guid.NewGuid();
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Column("id_client")]
         public Guid IdClient { get; set; }

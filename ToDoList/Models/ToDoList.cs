@@ -6,11 +6,9 @@ namespace ToDoListApp.Models
     [Table("todo_lists")]
     public class ToDoList
     {
-        [Required]
         [Column("id")]
-        public Guid Id { get; } = Guid.NewGuid();
+        public Guid Id { get; set; } = Guid.NewGuid();
 
-        [Required]
         [Column("name")]
         public string Name { get; set; }
 

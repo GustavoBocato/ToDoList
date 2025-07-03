@@ -14,7 +14,7 @@ namespace ToDoListApp.Models
 
         [Column("description")]
         public string Description { get; set; }
-        
+
         [Required]
         [Column("id_todo_list")]
         public Guid IdToDoList { get; set; }

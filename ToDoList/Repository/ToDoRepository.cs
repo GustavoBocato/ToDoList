@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
 using ToDoListApp.Data;
 using ToDoListApp.Models;
+using ToDoListApp.Models.DTOs;
 
 namespace ToDoListApp.Repository
 {
@@ -13,10 +14,12 @@ namespace ToDoListApp.Repository
             _dbContext = dbContext;
         }
 
-        public void InsertClient(Client client)
+        public Client? CreateClient(Client client)
         {
             _dbContext.Clients.Add(client);
             _dbContext.SaveChanges();
+
+            return GetClientById(client.Id);
         }
 
         public Client? GetClientByEmail(string email)
@@ -41,6 +44,17 @@ namespace ToDoListApp.Repository
             _dbContext.ClientToDoLists.Add(clientToDoList);
             _dbContext.SaveChanges();
             return _dbContext.ToDoLists.AsQueryable().FirstOrDefault(tdl => tdl.Id == toDoList.Id);
+        }
+
+        public IEnumerable<ToDoList> GetToDoListsByClientId(Guid clientId)
+        {
+            return _dbContext.ClientToDoLists
+                .Where(ctdl => ctdl.IdClient == clientId)
+                .Join(_dbContext.ToDoLists,
+                ctdl => ctdl.IdToDoList,
+                tdl => tdl.Id,
+                (ctdl, tdl) => tdl)
+                .ToList();
         }
     }
 }

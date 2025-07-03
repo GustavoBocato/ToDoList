@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using ToDoListApp.Data;
+using ToDoListApp.Mappings;
 using ToDoListApp.Repository;
 using ToDoListApp.Services;
 
@@ -20,9 +21,9 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ToDoDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-builder.Services.AddTransient<IClientService, ClientService>();
-builder.Services.AddTransient<IClientRepository, ClientRepository>();
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddTransient<IToDoService, ToDoService>();
+builder.Services.AddTransient<IToDoRepository, ToDoRepository>();
+builder.Services.AddAutoMapper(typeof(Mapping));
 
 builder.Services.AddAuthentication(options =>
 {
