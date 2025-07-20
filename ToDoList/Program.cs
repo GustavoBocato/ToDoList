@@ -43,6 +43,29 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
         ClockSkew = TimeSpan.Zero
     };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine("Authentication failed: " + context.Exception.Message);
+            return Task.CompletedTask;
+        },
+        OnTokenValidated = context =>
+        {
+            Console.WriteLine("Token validated. Claims:");
+            foreach (var claim in context.Principal.Claims)
+            {
+                Console.WriteLine($"  - {claim.Type}: {claim.Value}");
+            }
+            return Task.CompletedTask;
+        },
+        OnChallenge = context =>
+        {
+            Console.WriteLine("Challenge triggered. Token might be missing or invalid.");
+            return Task.CompletedTask;
+        }
+    };
 });
 
 builder.Services.AddSingleton<IJwtTokenService>(provider =>

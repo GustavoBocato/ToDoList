@@ -13,5 +13,8 @@ namespace ToDoListApp.Models
 
         [Column("id_todo_list")]
         public Guid IdToDoList { get; set; }
+
+        [Column("is_owner")]
+        public bool IsOwner { get; set; }
     }
 }

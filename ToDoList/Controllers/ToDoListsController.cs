@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using ToDoListApp.Models.DTOs;
 using ToDoListApp.Services;
+using ToDoListApp.Utils;
 
 namespace ToDoListApp.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class ToDoListsController : ControllerBase
+    public class ToDoListsController : BaseController
     {
         private readonly IToDoService _toDoService;
 
@@ -22,10 +23,7 @@ namespace ToDoListApp.Controllers
         {
             try
             {
-                var sub = User.FindFirst("sub")?.Value;
-
-                if (!Guid.TryParse(sub, out var clientId))
-                    throw new ArgumentException("Id do usuário está mal formado.");
+                var clientId = GetClientIdFromUser();
 
                 _toDoService.CheckIfClientExists(clientId);
                 var createdToDoList = _toDoService.CreateToDoList(toDoListDTO, clientId);
@@ -38,10 +36,18 @@ namespace ToDoListApp.Controllers
             }
         }
 
-        [HttpGet("/api/clients/{clientId}/todolists")]
-        public ActionResult GetToDoList(Guid clientId) 
+        [HttpGet]
+        public ActionResult GetToDoLists()
         {
-            return Ok(_toDoService.GetToDoListsByClientId(clientId));
+            try
+            {
+                var clientId = GetClientIdFromUser();
+                return Ok(_toDoService.GetToDoListsByClientId(clientId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

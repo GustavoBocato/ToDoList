@@ -37,7 +37,8 @@ namespace ToDoListApp.Repository
             var clientToDoList = new ClientToDoList()
             {
                 IdClient = clientId,
-                IdToDoList = toDoList.Id
+                IdToDoList = toDoList.Id,
+                IsOwner = true
             };
 
             _dbContext.ToDoLists.Add(toDoList);
