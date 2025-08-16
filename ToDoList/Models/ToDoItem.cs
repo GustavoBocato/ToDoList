@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ToDoListApp.Models
 {
     [Table("todo_items")]
-    public class ToDoItem
+    public class TodoItem
     {
         [Column("id")]
         public Guid Id { get; set; }
@@ -17,6 +17,6 @@ namespace ToDoListApp.Models
 
         [Required]
         [Column("id_todo_list")]
-        public Guid IdToDoList { get; set; }
+        public Guid IdTodolist { get; set; }
     }
 }

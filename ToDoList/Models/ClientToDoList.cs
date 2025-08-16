@@ -3,7 +3,7 @@
 namespace ToDoListApp.Models
 {
     [Table("client_todo_list")]
-    public class ClientToDoList
+    public class ClientTodolist
     {
         [Column("id")]
         public Guid Id { get; set; } = Guid.NewGuid();
@@ -12,9 +12,9 @@ namespace ToDoListApp.Models
         public Guid IdClient { get; set; }
 
         [Column("id_todo_list")]
-        public Guid IdToDoList { get; set; }
+        public Guid IdTodolist { get; set; }
 
         [Column("is_owner")]
-        public bool IsOwner { get; set; }
+        public bool IsOwner { get; set; } = false;
     }
 }

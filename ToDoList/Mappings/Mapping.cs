@@ -9,7 +9,8 @@ namespace ToDoListApp.Mappings
         public Mapping() 
         {
             CreateMap<ClientDTO, Client>();
-            CreateMap<ToDoListDTO, ToDoList>();
+            CreateMap<TodolistDTO, Todolist>();
+            CreateMap<ClientTodolistDTO, TodolistDTO>();
         }
     }
 }

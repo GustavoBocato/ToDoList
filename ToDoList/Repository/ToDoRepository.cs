@@ -5,11 +5,11 @@ using ToDoListApp.Models.DTOs;
 
 namespace ToDoListApp.Repository
 {
-    public class ToDoRepository : IToDoRepository
+    public class TodoRepository : ITodoRepository
     {
         private readonly ToDoDbContext _dbContext;
 
-        public ToDoRepository(ToDoDbContext dbContext)
+        public TodoRepository(ToDoDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -32,30 +32,76 @@ namespace ToDoListApp.Repository
             return _dbContext.Clients.AsQueryable().FirstOrDefault(c => c.Id == clientId);
         }
 
-        public ToDoList CreateToDoList(ToDoList toDoList, Guid clientId)
+        public Todolist CreateToDoList(Todolist toDoList, Guid clientId)
         {
-            var clientToDoList = new ClientToDoList()
+            var clientToDoList = new ClientTodolist()
             {
                 IdClient = clientId,
-                IdToDoList = toDoList.Id,
+                IdTodolist = toDoList.Id,
                 IsOwner = true
             };
 
-            _dbContext.ToDoLists.Add(toDoList);
-            _dbContext.ClientToDoLists.Add(clientToDoList);
+            _dbContext.TodoLists.Add(toDoList);
+            _dbContext.ClientTodoLists.Add(clientToDoList);
             _dbContext.SaveChanges();
-            return _dbContext.ToDoLists.AsQueryable().FirstOrDefault(tdl => tdl.Id == toDoList.Id);
+            return _dbContext.TodoLists.AsQueryable().FirstOrDefault(tdl => tdl.Id == toDoList.Id);
         }
 
-        public IEnumerable<ToDoList> GetToDoListsByClientId(Guid clientId)
+        public IEnumerable<Todolist> GetToDoListsByClientId(Guid clientId)
         {
-            return _dbContext.ClientToDoLists
+            return _dbContext.ClientTodoLists
                 .Where(ctdl => ctdl.IdClient == clientId)
-                .Join(_dbContext.ToDoLists,
-                ctdl => ctdl.IdToDoList,
+                .Join(_dbContext.TodoLists,
+                ctdl => ctdl.IdTodolist,
                 tdl => tdl.Id,
                 (ctdl, tdl) => tdl)
                 .ToList();
+        }
+
+        public ClientTodolist? GetClientTodolist(Guid clientId, Guid todolistId)
+        {
+            return _dbContext.ClientTodoLists
+                .Where(ctdl => ctdl.IdClient == clientId && ctdl.IdTodolist == todolistId)
+                .FirstOrDefault();
+        }
+
+        public ClientTodolist PostClientTodolist(ClientTodolist clientTodolist)
+        {
+            _dbContext.ClientTodoLists.Add(clientTodolist);
+            _dbContext.SaveChanges();
+
+            return GetClientTodolist(clientTodolist.IdClient, clientTodolist.IdTodolist);
+        }
+
+        public void DeleteClientTodolist(Guid id)
+        {
+            var clientTodolist = _dbContext.ClientTodoLists
+                .Where(ctdl => ctdl.Id == id)
+                .FirstOrDefault();
+
+            if (clientTodolist != null)
+            {
+                _dbContext.ClientTodoLists.Remove(clientTodolist);
+                _dbContext.SaveChanges();
+            }
+        }
+
+        public ClientTodolist? GetClientTodolistById(Guid id) 
+        {
+            return _dbContext.ClientTodoLists
+                .Where(ctdl => ctdl.Id == id)
+                .FirstOrDefault();
+        }
+
+        public void DeleteTodoListById(Guid id)
+        {
+            var todoList = _dbContext.TodoLists.Where(tdl => tdl.Id == id).FirstOrDefault();
+
+            if (todoList != null) 
+            {
+                _dbContext.TodoLists.Remove(todoList);
+                _dbContext.SaveChanges();
+            }
         }
     }
 }

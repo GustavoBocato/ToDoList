@@ -8,14 +8,12 @@ namespace ToDoListApp.Controllers
     [Route("api/[controller]")]
     public class ClientsController : ControllerBase
     {
-        private readonly ILogger<ClientsController> _logger;
-        private readonly IToDoService _toDoService;
+        private readonly ITodoService _toDoService;
         private readonly IJwtTokenService _jwtTokenService;
 
-        public ClientsController(ILogger<ClientsController> logger, IToDoService toDoService,
+        public ClientsController(ITodoService toDoService,
             IJwtTokenService jwtTokenService)
         {
-            _logger = logger;
             _toDoService = toDoService;
             _jwtTokenService = jwtTokenService;
         }
@@ -23,16 +21,11 @@ namespace ToDoListApp.Controllers
         [HttpPost]
         public ActionResult PostClient(ClientDTO clientDTO)
         {
-            try
-            {
-                _toDoService.ValidateClientRegistration(clientDTO);
-                var client = _toDoService.CreateClient(clientDTO);
-                return Ok(new { Token = _jwtTokenService.GenerateToken(client) });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            if (!_toDoService.ValidateClientRegistration(clientDTO)) 
+                return BadRequest("O email do cliente a ser registrado já foi cadastrado no sistema.");
+            
+            var client = _toDoService.CreateClient(clientDTO);
+            return Ok(new { Token = _jwtTokenService.GenerateToken(client) });
         }
 
         [HttpPost("login")]

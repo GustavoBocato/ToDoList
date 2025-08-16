@@ -6,22 +6,24 @@ using ToDoListApp.Repository;
 
 namespace ToDoListApp.Services
 {
-    public class ToDoService : IToDoService
+    public class TodoService : ITodoService
     {
-        private readonly IToDoRepository _toDoRepository;
+        private readonly ITodoRepository _toDoRepository;
         private readonly PasswordHasher<Client> _passwordHasher = new();
         private readonly IMapper _mapper;
 
-        public ToDoService(IToDoRepository toDoRepository, IMapper mapper)
+        public TodoService(ITodoRepository toDoRepository, IMapper mapper)
         {
             _toDoRepository = toDoRepository;
             _mapper = mapper;
         }
 
-        public void ValidateClientRegistration(ClientDTO client)
+        public bool ValidateClientRegistration(ClientDTO client)
         {
             if (_toDoRepository.GetClientByEmail(client.Email) is not null)
-                throw new ArgumentException("Um usuário com esse email já foi cadastrado.");
+                return false;
+
+            return true;
         }
 
         public Client CreateClient(ClientDTO clientDTO)
@@ -56,21 +58,33 @@ namespace ToDoListApp.Services
                 throw new ArgumentException("Não existe cliente cujo id corresponde ao requisitante.");
         }
 
-        public ToDoList CreateToDoList(ToDoListDTO toDoListDTO, Guid clientId)
+        public Todolist CreateToDoList(TodolistDTO toDoListDTO, Guid clientId)
         {
-            var toDoList = _mapper.Map<ToDoList>(toDoListDTO);
+            var toDoList = _mapper.Map<Todolist>(toDoListDTO);
 
             return _toDoRepository.CreateToDoList(toDoList, clientId);
         }
 
-        public IEnumerable<ToDoList> GetToDoListsByClientId(Guid clientId) 
+        public IEnumerable<Todolist> GetToDoListsByClientId(Guid clientId) 
         {
             return _toDoRepository.GetToDoListsByClientId(clientId);
         }
 
-        public ClientToDoList PostClientToDoList()
+        public ClientTodolist PostClientToDoList(ClientTodolistDTO clientTodolistDTO)
         {
+            var clientTodolist = _mapper.Map<ClientTodolist>(clientTodolistDTO);
 
+            return _toDoRepository.PostClientTodolist(clientTodolist);
+        }
+
+        public void DeleteClientToDoList(Guid id)
+        {
+            _toDoRepository.DeleteClientTodolist(id);   
+        }
+
+        public void DeleteTodoListById(Guid id)
+        {
+            _toDoRepository.DeleteTodoListById(id);
         }
     }
 }

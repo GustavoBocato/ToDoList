@@ -9,17 +9,17 @@ namespace ToDoListApp.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class ToDoListsController : BaseController
+    public class TodoListsController : BaseController
     {
-        private readonly IToDoService _toDoService;
+        private readonly ITodoService _toDoService;
 
-        public ToDoListsController(IToDoService toDoService)
+        public TodoListsController(ITodoService toDoService)
         {
             _toDoService = toDoService;
         }
 
         [HttpPost]
-        public ActionResult PostToDoList(ToDoListDTO toDoListDTO)
+        public ActionResult PostToDoList(TodolistDTO toDoListDTO)
         {
             try
             {
@@ -49,5 +49,15 @@ namespace ToDoListApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete]
+        public ActionResult DeleteToDoList(Guid id) 
+        {
+            _toDoService.DeleteTodoListById(id);
+            return Ok("Lista de afazeres deletada com successo.");
+        }
+
+        [HttpPatch]
+        public ActionResult PatchTodoList(Guid id, )
     }
 }

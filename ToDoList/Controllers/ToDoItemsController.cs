@@ -9,19 +9,19 @@ namespace ToDoListApp.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class ToDoItemsController : BaseController
+    public class TodoItemsController : BaseController
     {
-        private readonly IToDoService _toDoService;
+        private readonly ITodoService _toDoService;
 
-        public ToDoItemsController(IToDoService service)
+        public TodoItemsController(ITodoService service)
         {
             _toDoService = service;
         }
 
         [HttpPost]
-        public ActionResult PostToDoItem(Guid toDoListId, ToDoItem toDoItem) 
+        public ActionResult PostToDoItem(Guid toDoListId, TodoItem toDoItem) 
         {
-            
+            return Ok();
         }
     }
 }

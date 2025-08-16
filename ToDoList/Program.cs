@@ -21,8 +21,9 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ToDoDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-builder.Services.AddTransient<IToDoService, ToDoService>();
-builder.Services.AddTransient<IToDoRepository, ToDoRepository>();
+builder.Services.AddTransient<ITodoService, TodoService>();
+builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddTransient<ITodoRepository, TodoRepository>();
 builder.Services.AddAutoMapper(typeof(Mapping));
 
 builder.Services.AddAuthentication(options =>
