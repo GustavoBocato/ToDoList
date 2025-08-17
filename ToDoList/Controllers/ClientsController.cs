@@ -19,7 +19,7 @@ namespace ToDoListApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult PostClient(ClientDTO clientDTO)
+        public ActionResult PostClient(PostClientDTO clientDTO)
         {
             if (!_toDoService.ValidateClientRegistration(clientDTO)) 
                 return BadRequest("O email do cliente a ser registrado já foi cadastrado no sistema.");

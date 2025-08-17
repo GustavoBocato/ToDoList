@@ -1,4 +1,5 @@
-﻿using ToDoListApp.Models;
+﻿using TodoListApp.Models.DTOs;
+using ToDoListApp.Models;
 using ToDoListApp.Models.DTOs;
 
 namespace ToDoListApp.Repository
@@ -8,12 +9,13 @@ namespace ToDoListApp.Repository
         public Client CreateClient(Client client);
         public Client? GetClientByEmail(string email);
         public Client? GetClientById(Guid clientId);
-        public Todolist CreateToDoList(Todolist toDoList, Guid clientId);
-        public IEnumerable<Todolist> GetToDoListsByClientId(Guid clientId);
-        public ClientTodolist? GetClientTodolist(Guid clientId, Guid todolistId);
-        public ClientTodolist PostClientTodolist(ClientTodolist clientTodolist);
+        public TodoList CreateToDoList(TodoList toDoList, Guid clientId);
+        public IEnumerable<TodoList> GetToDoListsByClientId(Guid clientId);
+        public ClientTodoList? GetClientTodolist(Guid clientId, Guid todolistId);
+        public ClientTodoList PostClientTodolist(ClientTodoList clientTodolist);
         public void DeleteClientTodolist(Guid id);
-        public ClientTodolist? GetClientTodolistById(Guid id);
+        public ClientTodoList? GetClientTodolistById(Guid id);
         public void DeleteTodoListById(Guid id);
+        public void PatchTodoList(Guid id, PatchTodoListDTO todolist);
     }
 }

@@ -1,18 +1,20 @@
-﻿using ToDoListApp.Models;
+﻿using TodoListApp.Models.DTOs;
+using ToDoListApp.Models;
 using ToDoListApp.Models.DTOs;
 
 namespace ToDoListApp.Services
 {
     public interface ITodoService
     {
-        public bool ValidateClientRegistration(ClientDTO client);
-        public Client CreateClient(ClientDTO clientDTO);
+        public bool ValidateClientRegistration(PostClientDTO client);
+        public Client CreateClient(PostClientDTO clientDTO);
         public Client ValidateLogin(string email, string password);
         public void CheckIfClientExists(Guid clientId);
-        public Todolist CreateToDoList(TodolistDTO toDoListDTO, Guid clientId);
-        public IEnumerable<Todolist> GetToDoListsByClientId(Guid clientId);
-        public ClientTodolist PostClientToDoList(ClientTodolistDTO clientTodolistDTO);
+        public TodoList CreateToDoList(PostTodoListDTO toDoListDTO, Guid clientId);
+        public IEnumerable<TodoList> GetToDoListsByClientId(Guid clientId);
+        public ClientTodoList PostClientToDoList(PostClientTodoListDTO clientTodolistDTO);
         public void DeleteClientToDoList(Guid id);
         public void DeleteTodoListById(Guid id);
+        public void PatchTodoList(Guid id, PatchTodoListDTO todolist);
     }
 }

@@ -21,7 +21,7 @@ namespace ToDoListApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post(ClientTodolistDTO clientTodolistDTO)
+        public ActionResult Post(PostClientTodoListDTO clientTodolistDTO)
         {
             if (!_authService.CanUserPostClientTodolist(GetClientIdFromUser(), clientTodolistDTO.IdTodolist))
                 return Forbid("O usuário não é dono da lista de afazeres, logo não pode adcionar outros" +

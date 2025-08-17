@@ -2,7 +2,7 @@
 
 namespace ToDoListApp.Models.DTOs
 {
-    public class TodolistDTO
+    public class PostTodoListDTO
     {
         [Required]
         public string Name { get; set; }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using TodoListApp.Models.DTOs;
 using ToDoListApp.Models;
 using ToDoListApp.Models.DTOs;
 using ToDoListApp.Repository;
@@ -18,7 +19,7 @@ namespace ToDoListApp.Services
             _mapper = mapper;
         }
 
-        public bool ValidateClientRegistration(ClientDTO client)
+        public bool ValidateClientRegistration(PostClientDTO client)
         {
             if (_toDoRepository.GetClientByEmail(client.Email) is not null)
                 return false;
@@ -26,7 +27,7 @@ namespace ToDoListApp.Services
             return true;
         }
 
-        public Client CreateClient(ClientDTO clientDTO)
+        public Client CreateClient(PostClientDTO clientDTO)
         {
             var client = _mapper.Map<Client>(clientDTO);
 
@@ -58,21 +59,21 @@ namespace ToDoListApp.Services
                 throw new ArgumentException("Não existe cliente cujo id corresponde ao requisitante.");
         }
 
-        public Todolist CreateToDoList(TodolistDTO toDoListDTO, Guid clientId)
+        public TodoList CreateToDoList(PostTodoListDTO toDoListDTO, Guid clientId)
         {
-            var toDoList = _mapper.Map<Todolist>(toDoListDTO);
+            var toDoList = _mapper.Map<TodoList>(toDoListDTO);
 
             return _toDoRepository.CreateToDoList(toDoList, clientId);
         }
 
-        public IEnumerable<Todolist> GetToDoListsByClientId(Guid clientId) 
+        public IEnumerable<TodoList> GetToDoListsByClientId(Guid clientId) 
         {
             return _toDoRepository.GetToDoListsByClientId(clientId);
         }
 
-        public ClientTodolist PostClientToDoList(ClientTodolistDTO clientTodolistDTO)
+        public ClientTodoList PostClientToDoList(PostClientTodoListDTO clientTodolistDTO)
         {
-            var clientTodolist = _mapper.Map<ClientTodolist>(clientTodolistDTO);
+            var clientTodolist = _mapper.Map<ClientTodoList>(clientTodolistDTO);
 
             return _toDoRepository.PostClientTodolist(clientTodolist);
         }
@@ -85,6 +86,11 @@ namespace ToDoListApp.Services
         public void DeleteTodoListById(Guid id)
         {
             _toDoRepository.DeleteTodoListById(id);
+        }
+
+        public void PatchTodoList(Guid id, PatchTodoListDTO todolist)
+        {
+            _toDoRepository.PatchTodoList(id, todolist);
         }
     }
 }

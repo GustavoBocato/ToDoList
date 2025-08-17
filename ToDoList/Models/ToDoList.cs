@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ToDoListApp.Models
 {
     [Table("todo_lists")]
-    public class Todolist
+    public class TodoList
     {
         [Column("id")]
         public Guid Id { get; set; } = Guid.NewGuid();

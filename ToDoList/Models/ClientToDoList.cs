@@ -3,7 +3,7 @@
 namespace ToDoListApp.Models
 {
     [Table("client_todo_list")]
-    public class ClientTodolist
+    public class ClientTodoList
     {
         [Column("id")]
         public Guid Id { get; set; } = Guid.NewGuid();

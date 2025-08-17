@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using TodoListApp.Models.DTOs;
 using ToDoListApp.Data;
 using ToDoListApp.Models;
 using ToDoListApp.Models.DTOs;
@@ -32,9 +33,9 @@ namespace ToDoListApp.Repository
             return _dbContext.Clients.AsQueryable().FirstOrDefault(c => c.Id == clientId);
         }
 
-        public Todolist CreateToDoList(Todolist toDoList, Guid clientId)
+        public TodoList CreateToDoList(TodoList toDoList, Guid clientId)
         {
-            var clientToDoList = new ClientTodolist()
+            var clientToDoList = new ClientTodoList()
             {
                 IdClient = clientId,
                 IdTodolist = toDoList.Id,
@@ -47,7 +48,7 @@ namespace ToDoListApp.Repository
             return _dbContext.TodoLists.AsQueryable().FirstOrDefault(tdl => tdl.Id == toDoList.Id);
         }
 
-        public IEnumerable<Todolist> GetToDoListsByClientId(Guid clientId)
+        public IEnumerable<TodoList> GetToDoListsByClientId(Guid clientId)
         {
             return _dbContext.ClientTodoLists
                 .Where(ctdl => ctdl.IdClient == clientId)
@@ -58,14 +59,14 @@ namespace ToDoListApp.Repository
                 .ToList();
         }
 
-        public ClientTodolist? GetClientTodolist(Guid clientId, Guid todolistId)
+        public ClientTodoList? GetClientTodolist(Guid clientId, Guid todolistId)
         {
             return _dbContext.ClientTodoLists
                 .Where(ctdl => ctdl.IdClient == clientId && ctdl.IdTodolist == todolistId)
                 .FirstOrDefault();
         }
 
-        public ClientTodolist PostClientTodolist(ClientTodolist clientTodolist)
+        public ClientTodoList PostClientTodolist(ClientTodoList clientTodolist)
         {
             _dbContext.ClientTodoLists.Add(clientTodolist);
             _dbContext.SaveChanges();
@@ -86,7 +87,7 @@ namespace ToDoListApp.Repository
             }
         }
 
-        public ClientTodolist? GetClientTodolistById(Guid id) 
+        public ClientTodoList? GetClientTodolistById(Guid id) 
         {
             return _dbContext.ClientTodoLists
                 .Where(ctdl => ctdl.Id == id)
@@ -101,6 +102,16 @@ namespace ToDoListApp.Repository
             {
                 _dbContext.TodoLists.Remove(todoList);
                 _dbContext.SaveChanges();
+            }
+        }
+
+        public void PatchTodoList(Guid id, PatchTodoListDTO todolist)
+        {
+            var todoList = _dbContext.TodoLists.Where(tdl => tdl.Id == id).FirstOrDefault();
+
+            if (todoList != null) 
+            {
+                // usar o mapper para                   
             }
         }
     }

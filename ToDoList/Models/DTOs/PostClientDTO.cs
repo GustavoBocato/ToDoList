@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ToDoListApp.Models.DTOs
 {
-    public class ClientDTO
+    public class PostClientDTO
     {
         [Required]
         public string Name { get; set; }

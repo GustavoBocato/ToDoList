@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TodoListApp.Models.DTOs;
 using ToDoListApp.Models.DTOs;
 using ToDoListApp.Services;
 using ToDoListApp.Utils;
@@ -19,7 +20,7 @@ namespace ToDoListApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult PostToDoList(TodolistDTO toDoListDTO)
+        public ActionResult PostToDoList(PostTodoListDTO toDoListDTO)
         {
             try
             {
@@ -51,13 +52,17 @@ namespace ToDoListApp.Controllers
         }
 
         [HttpDelete]
-        public ActionResult DeleteToDoList(Guid id) 
+        public ActionResult DeleteTodoList(Guid id) 
         {
             _toDoService.DeleteTodoListById(id);
             return Ok("Lista de afazeres deletada com successo.");
         }
 
         [HttpPatch]
-        public ActionResult PatchTodoList(Guid id, )
+        public IActionResult PatchTodoList(Guid id, [FromBody] PatchTodoListDTO todolist)
+        {
+            _toDoService.PatchTodoList(id, todolist);
+            return Ok();
+        }
     }
 }

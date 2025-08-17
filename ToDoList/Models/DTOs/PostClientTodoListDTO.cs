@@ -1,6 +1,6 @@
 ﻿namespace ToDoListApp.Models.DTOs
 {
-    public class ClientTodolistDTO
+    public class PostClientTodoListDTO
     {
         public Guid IdClient { get; set; }
 

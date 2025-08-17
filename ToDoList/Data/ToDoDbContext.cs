@@ -9,9 +9,9 @@ namespace ToDoListApp.Data
 
         // Define your DbSets (tables)
         public DbSet<TodoItem> TodoItems { get; set; }
-        public DbSet<Todolist> TodoLists { get; set; }
+        public DbSet<TodoList> TodoLists { get; set; }
         public DbSet<Client> Clients { get; set; }
-        public DbSet<ClientTodolist> ClientTodoLists { get; set; }
+        public DbSet<ClientTodoList> ClientTodoLists { get; set; }
 
     }
 }
