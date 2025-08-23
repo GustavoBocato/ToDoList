@@ -88,9 +88,15 @@ namespace ToDoListApp.Services
             _toDoRepository.DeleteTodoListById(id);
         }
 
-        public void PatchTodoList(Guid id, PatchTodoListDTO todolist)
+        public void PatchTodoList(Guid id, PatchTodoListDTO todoListDTO)
         {
-            _toDoRepository.PatchTodoList(id, todolist);
+            var todoList = _toDoRepository.GetTodoListById(id);
+
+            if (todoList != null)
+            {
+                _mapper.Map(todoListDTO, todoList);
+                _toDoRepository.SaveDbChanges();
+            }
         }
     }
 }

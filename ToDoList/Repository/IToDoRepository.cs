@@ -16,6 +16,7 @@ namespace ToDoListApp.Repository
         public void DeleteClientTodolist(Guid id);
         public ClientTodoList? GetClientTodolistById(Guid id);
         public void DeleteTodoListById(Guid id);
-        public void PatchTodoList(Guid id, PatchTodoListDTO todolist);
+        public TodoList? GetTodoListById(Guid id);
+        public void SaveDbChanges();
     }
 }

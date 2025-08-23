@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using TodoListApp.Models.DTOs;
+﻿using TodoListApp.Models.DTOs;
 using ToDoListApp.Data;
 using ToDoListApp.Models;
-using ToDoListApp.Models.DTOs;
 
 namespace ToDoListApp.Repository
 {
@@ -87,7 +85,7 @@ namespace ToDoListApp.Repository
             }
         }
 
-        public ClientTodoList? GetClientTodolistById(Guid id) 
+        public ClientTodoList? GetClientTodolistById(Guid id)
         {
             return _dbContext.ClientTodoLists
                 .Where(ctdl => ctdl.Id == id)
@@ -98,21 +96,21 @@ namespace ToDoListApp.Repository
         {
             var todoList = _dbContext.TodoLists.Where(tdl => tdl.Id == id).FirstOrDefault();
 
-            if (todoList != null) 
+            if (todoList != null)
             {
                 _dbContext.TodoLists.Remove(todoList);
                 _dbContext.SaveChanges();
             }
         }
 
-        public void PatchTodoList(Guid id, PatchTodoListDTO todolist)
+        public TodoList? GetTodoListById(Guid id)
         {
-            var todoList = _dbContext.TodoLists.Where(tdl => tdl.Id == id).FirstOrDefault();
+            return _dbContext.TodoLists.Where(tdl => tdl.Id == id).FirstOrDefault();
+        }
 
-            if (todoList != null) 
-            {
-                // usar o mapper para                   
-            }
+        public void SaveDbChanges()
+        {
+            _dbContext.SaveChanges();
         }
     }
 }
