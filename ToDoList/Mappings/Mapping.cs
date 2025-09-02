@@ -12,9 +12,17 @@ namespace ToDoListApp.Mappings
             CreateMap<PostClientDTO, Client>();
             CreateMap<PostTodoListDTO, TodoList>();
             CreateMap<PostClientTodoListDTO, PostTodoListDTO>();
+            CreateMap<PostTodoItemDTO, TodoItem>();
             CreateMap<PatchTodoListDTO, TodoList>()
             .ForAllMembers(opts =>
                 opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<PatchTodoItemDTO, TodoItem>()
+            .ForAllMembers(opts =>
+                opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<PatchClientDTO, Client>()
+            .ForAllMembers(opts =>
+                opts.Condition((src, dest, srcMember) => srcMember != null));
+
         }
     }
 }

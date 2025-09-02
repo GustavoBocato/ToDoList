@@ -7,7 +7,7 @@ namespace ToDoListApp.Models
     public class TodoItem
     {
         [Column("id")]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Column("name")]
         public string Name { get; set; }

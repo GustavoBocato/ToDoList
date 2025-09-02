@@ -1,49 +1,44 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using TodoListApp.Models.DTOs;
 using ToDoListApp.Models;
 using ToDoListApp.Models.DTOs;
 using ToDoListApp.Repository;
 
 namespace ToDoListApp.Services
 {
-    public class TodoService : ITodoService
+    public class TodoService
     {
-        private readonly ITodoRepository _toDoRepository;
-        private readonly PasswordHasher<Client> _passwordHasher = new();
+        private readonly TodoRepository _todoRepository;
         private readonly IMapper _mapper;
 
-        public TodoService(ITodoRepository toDoRepository, IMapper mapper)
+        public TodoService(TodoRepository toDoRepository, IMapper mapper)
         {
-            _toDoRepository = toDoRepository;
+            _todoRepository = toDoRepository;
             _mapper = mapper;
         }
 
         public bool ValidateClientRegistration(PostClientDTO client)
         {
-            if (_toDoRepository.GetClientByEmail(client.Email) is not null)
-                return false;
-
-            return true;
+            return !ClientEmailAlreadyTaken(client.Email);
         }
 
-        public Client CreateClient(PostClientDTO clientDTO)
+        public bool ClientEmailAlreadyTaken(string email)
         {
-            var client = _mapper.Map<Client>(clientDTO);
+            if (_todoRepository.GetClientByEmail(email) is not null)
+                return true;
 
-            client.Password = _passwordHasher.HashPassword(client, client.Password);
-
-            return _toDoRepository.CreateClient(client);
+            return false;
         }
 
-        public Client ValidateLogin(String email, String password)
+        public Client ValidateLogin(string email, string password)
         {
-            Client client = _toDoRepository.GetClientByEmail(email);
+            Client client = _todoRepository.GetClientByEmail(email);
 
             if (client is null)
                 throw new ArgumentException("O email entrado não consta na nossa base de dados.");
 
-            var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(client, client.Password, password);
+            var hasher = new PasswordHasher<Client>();
+            var passwordVerificationResult = hasher.VerifyHashedPassword(client, client.Password, password);
 
             if (passwordVerificationResult == PasswordVerificationResult.Failed)
                 throw new ArgumentException("A senha entrada não corresponde a senha correta.");
@@ -51,52 +46,63 @@ namespace ToDoListApp.Services
             return client;
         }
 
-        public void CheckIfClientExists(Guid clientId)
-        {
-            var client = _toDoRepository.GetClientById(clientId);
-
-            if (client is null)
-                throw new ArgumentException("Não existe cliente cujo id corresponde ao requisitante.");
-        }
-
         public TodoList CreateToDoList(PostTodoListDTO toDoListDTO, Guid clientId)
         {
             var toDoList = _mapper.Map<TodoList>(toDoListDTO);
 
-            return _toDoRepository.CreateToDoList(toDoList, clientId);
+            return _todoRepository.CreateToDoList(toDoList, clientId);
         }
 
-        public IEnumerable<TodoList> GetToDoListsByClientId(Guid clientId) 
+        public IEnumerable<TodoList> GetTodoListsByClientId(Guid clientId)
         {
-            return _toDoRepository.GetToDoListsByClientId(clientId);
+            return _todoRepository.GetTodoListsByClientId(clientId);
         }
 
-        public ClientTodoList PostClientToDoList(PostClientTodoListDTO clientTodolistDTO)
+        public IEnumerable<TodoItem> GetTodoItemsByTodoListId(Guid id)
         {
-            var clientTodolist = _mapper.Map<ClientTodoList>(clientTodolistDTO);
-
-            return _toDoRepository.PostClientTodolist(clientTodolist);
+            return _todoRepository.GetTodoItemsByTodoListId(id);
         }
 
-        public void DeleteClientToDoList(Guid id)
+        public IEnumerable<Client> GetClientsFromTodoList(Guid todoListId)
         {
-            _toDoRepository.DeleteClientTodolist(id);   
+            return _todoRepository.GetClientsFromTodoList(todoListId);
         }
 
-        public void DeleteTodoListById(Guid id)
+        public TEntity? Patch<TEntity, TPatchDTO>(Guid id, TPatchDTO patchDTO) where TEntity : class
         {
-            _toDoRepository.DeleteTodoListById(id);
-        }
+            var entity = _todoRepository.GetById<TEntity>(id);
 
-        public void PatchTodoList(Guid id, PatchTodoListDTO todoListDTO)
-        {
-            var todoList = _toDoRepository.GetTodoListById(id);
-
-            if (todoList != null)
+            if (entity is not null)
             {
-                _mapper.Map(todoListDTO, todoList);
-                _toDoRepository.SaveDbChanges();
+                _mapper.Map(patchDTO, entity);
+                _todoRepository.SaveDbChanges();
             }
+
+            return entity;
+        }
+
+        public TEntity Post<TEntity, TEntityDTO>(TEntityDTO entityDTO) where TEntity : class
+        {
+            var entity = _mapper.Map<TEntity>(entityDTO);
+
+            return _todoRepository.Post<TEntity>(entity);
+        }
+
+        public TEntity? GetById<TEntity>(Guid id) where TEntity : class
+        {
+            return _todoRepository.GetById<TEntity>(id);
+        }
+
+        public void DeleteById<TEntity>(Guid id) where TEntity : class
+        {
+            _todoRepository.DeleteById<TEntity>(id);
+        }
+
+        public bool EntityExists<TEntity>(Guid id) where TEntity : class
+        {
+            var entity = _todoRepository.GetById<TEntity>(id);
+
+            return entity is not null;
         }
     }
 }

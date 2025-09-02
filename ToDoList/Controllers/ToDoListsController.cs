@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TodoListApp.Models.DTOs;
+using ToDoListApp.Models;
 using ToDoListApp.Models.DTOs;
 using ToDoListApp.Services;
 using ToDoListApp.Utils;
@@ -12,57 +13,76 @@ namespace ToDoListApp.Controllers
     [ApiController]
     public class TodoListsController : BaseController
     {
-        private readonly ITodoService _toDoService;
+        private readonly TodoService _todoService;
+        private readonly AuthService _authService;
 
-        public TodoListsController(ITodoService toDoService)
+        public TodoListsController(TodoService toDoService, AuthService authService)
         {
-            _toDoService = toDoService;
+            _todoService = toDoService;
+            _authService = authService;
         }
 
         [HttpPost]
         public ActionResult PostToDoList(PostTodoListDTO toDoListDTO)
         {
-            try
-            {
-                var clientId = GetClientIdFromUser();
+            var clientId = GetClientIdFromUser();
 
-                _toDoService.CheckIfClientExists(clientId);
-                var createdToDoList = _toDoService.CreateToDoList(toDoListDTO, clientId);
+            if (!_todoService.EntityExists<Client>(clientId)) return BadRequest("O usuário a criar a lista de " +
+                "afazeres não existe na nossa base de dados.");
 
-                return Ok(createdToDoList);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok(_todoService.CreateToDoList(toDoListDTO, clientId));
         }
 
-        [HttpGet]
+        [HttpGet("AllTodoListsFromClient")]
         public ActionResult GetToDoLists()
         {
-            try
-            {
-                var clientId = GetClientIdFromUser();
-                return Ok(_toDoService.GetToDoListsByClientId(clientId));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var clientId = GetClientIdFromUser();
+            return Ok(_todoService.GetTodoListsByClientId(clientId));
         }
 
         [HttpDelete]
         public ActionResult DeleteTodoList(Guid id) 
         {
-            _toDoService.DeleteTodoListById(id);
+            var clientId = GetClientIdFromUser();
+
+            if(!_authService.IsUserOwnerOfTodolist(clientId, id))
+                return Unauthorized("Usuário não tem permissão para deletar lista de afazeres.");
+
+            _todoService.DeleteById<TodoList>(id);
             return Ok("Lista de afazeres deletada com successo.");
         }
 
         [HttpPatch]
-        public IActionResult PatchTodoList(Guid id, [FromBody] PatchTodoListDTO todolist)
+        public ActionResult Patch(Guid id, [FromBody] PatchTodoListDTO todolist)
         {
-            _toDoService.PatchTodoList(id, todolist);
-            return Ok();
+            var clientId = GetClientIdFromUser();
+
+            if (!_authService.IsUserOwnerOfTodolist(clientId, id))
+                return Unauthorized("Usuário não pode modificar lista de afazeres de que não é dono.");
+
+            var result = _todoService.Patch<TodoList, PatchTodoListDTO>(id, todolist);
+
+            if (result == null)
+            {
+                return NotFound("Não se pode encontrar uma lista" +
+                " de afazeres com esse id para se atualizar.");
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public ActionResult GetClientsFromTodoList(Guid todoListId)
+        {
+            var clientId = GetClientIdFromUser();
+
+            if(!_authService.IsUserIncludedOnAList(clientId, todoListId))
+                return Unauthorized("Usuário não pode ver os outros incluidos em uma lista a qual não pertence.");
+
+            if (!_todoService.EntityExists<TodoList>(todoListId)) return NotFound("Lista de afazeres não existe" +
+                " nas nosssas bases de dados.");
+
+            return Ok(_todoService.GetClientsFromTodoList(todoListId));
         }
     }
 }

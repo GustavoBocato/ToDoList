@@ -1,21 +1,22 @@
-﻿using ToDoListApp.Repository;
+﻿using ToDoListApp.Models;
+using ToDoListApp.Repository;
 
 namespace ToDoListApp.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService
     {
-        private readonly ITodoRepository _todoRepository;
+        private readonly TodoRepository _todoRepository;
 
-        public AuthService(ITodoRepository todoRepository)
+        public AuthService(TodoRepository todoRepository)
         {
             _todoRepository = todoRepository;
         }
 
-        private bool IsUserOwnerOfTodolist(Guid userId, Guid todolistId)
+        public bool IsUserOwnerOfTodolist(Guid userId, Guid todolistId)
         {
             var clientTodolist = _todoRepository.GetClientTodolist(userId, todolistId);
 
-            if (clientTodolist == null) return false;
+            if (clientTodolist is null) return false;
 
             return clientTodolist.IsOwner;
         }
@@ -27,10 +28,19 @@ namespace ToDoListApp.Services
 
         public bool CanUserDeleteClientTodolist(Guid userId, Guid clientTodolistId)
         {
-            var relationshipToBeDeleted = _todoRepository.GetClientTodolistById(clientTodolistId);
+            var relationshipToBeDeleted = _todoRepository.GetById<ClientTodoList>(clientTodolistId);
 
             return userId == relationshipToBeDeleted.IdClient ||
                 IsUserOwnerOfTodolist(userId, relationshipToBeDeleted.IdTodolist);
+        }
+
+        public bool IsUserIncludedOnAList(Guid userId, Guid todolistId) 
+        {
+            var clientTodolist = _todoRepository.GetClientTodolist(userId, todolistId);
+
+            if (clientTodolist is null) return false;
+
+            return true;
         }
     }
 }

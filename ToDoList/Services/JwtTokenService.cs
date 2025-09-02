@@ -6,7 +6,7 @@ using ToDoListApp.Models;
 
 namespace ToDoListApp.Services
 {
-    public class JwtTokenService : IJwtTokenService
+    public class JwtTokenService
     {
         private readonly string _key;
         private readonly string _issuer;

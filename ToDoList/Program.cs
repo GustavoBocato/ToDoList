@@ -21,9 +21,9 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ToDoDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-builder.Services.AddTransient<ITodoService, TodoService>();
-builder.Services.AddTransient<IAuthService, AuthService>();
-builder.Services.AddTransient<ITodoRepository, TodoRepository>();
+builder.Services.AddTransient<TodoService>();
+builder.Services.AddTransient<AuthService>();
+builder.Services.AddTransient<TodoRepository>();
 builder.Services.AddAutoMapper(typeof(Mapping));
 
 builder.Services.AddAuthentication(options =>
@@ -69,7 +69,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddSingleton<IJwtTokenService>(provider =>
+builder.Services.AddSingleton<JwtTokenService>(provider =>
 {
     return new JwtTokenService(secretKey, issuer, audience);
 });

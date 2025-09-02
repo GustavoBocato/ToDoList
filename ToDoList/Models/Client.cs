@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ToDoListApp.Models
@@ -6,6 +6,8 @@ namespace ToDoListApp.Models
     [Table("clients")]
     public class Client
     {
+        private string _passwordHash = string.Empty;
+
         [Column("id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
@@ -16,6 +18,22 @@ namespace ToDoListApp.Models
         public string Email { get; set; }
 
         [Column("password")]
-        public string Password { get; set; }
+        public string Password
+        {
+            get => _passwordHash;
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    _passwordHash = HashPassword(value);
+                }
+            }
+        }
+
+        private string HashPassword(string value)
+        {
+            var hasher = new PasswordHasher<Client>();
+            return hasher.HashPassword(this, value);
+        }
     }
 }

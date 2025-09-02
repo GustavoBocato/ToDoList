@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ToDoListApp.Models;
 using ToDoListApp.Models.DTOs;
 using ToDoListApp.Services;
 using ToDoListApp.Utils;
@@ -11,12 +12,12 @@ namespace ToDoListApp.Controllers
     [ApiController]
     public class ClientTodolistsController : BaseController
     {
-        private readonly ITodoService _toDoService;
-        private readonly IAuthService _authService;
+        private readonly TodoService _todoService;
+        private readonly AuthService _authService;
 
-        public ClientTodolistsController(ITodoService toDoService, IAuthService authService)
+        public ClientTodolistsController(TodoService toDoService, AuthService authService)
         {
-            _toDoService = toDoService;
+            _todoService = toDoService;
             _authService = authService;
         }
 
@@ -27,7 +28,7 @@ namespace ToDoListApp.Controllers
                 return Forbid("O usuário não é dono da lista de afazeres, logo não pode adcionar outros" +
                     " clientes a lista.");
 
-            return Ok(_toDoService.PostClientToDoList(clientTodolistDTO));
+            return Ok(_todoService.Post<ClientTodoList, PostClientTodoListDTO>(clientTodolistDTO));
         }
 
         [HttpDelete]
@@ -37,7 +38,7 @@ namespace ToDoListApp.Controllers
                 return Forbid("O usuário não pode remover o cliente da lista de afazeres. Porque não é nem dono" +
                     " da lista e nem é o cliente a ser removido.");
 
-            _toDoService.DeleteClientToDoList(id);
+            _todoService.DeleteById<ClientTodoList>(id);
 
             return Ok();
         }
