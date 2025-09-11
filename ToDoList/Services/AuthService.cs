@@ -14,7 +14,7 @@ namespace ToDoListApp.Services
 
         public bool IsUserOwnerOfTodolist(Guid userId, Guid todolistId)
         {
-            var clientTodolist = _todoRepository.GetClientTodolist(userId, todolistId);
+            var clientTodolist = _todoRepository.GetClientTodolistAsync(userId, todolistId);
 
             if (clientTodolist is null) return false;
 
@@ -28,7 +28,7 @@ namespace ToDoListApp.Services
 
         public bool CanUserDeleteClientTodolist(Guid userId, Guid clientTodolistId)
         {
-            var relationshipToBeDeleted = _todoRepository.GetById<ClientTodoList>(clientTodolistId);
+            var relationshipToBeDeleted = _todoRepository.GetByIdAsync<ClientTodoList>(clientTodolistId);
 
             return userId == relationshipToBeDeleted.IdClient ||
                 IsUserOwnerOfTodolist(userId, relationshipToBeDeleted.IdTodolist);
@@ -36,7 +36,7 @@ namespace ToDoListApp.Services
 
         public bool IsUserIncludedOnAList(Guid userId, Guid todolistId) 
         {
-            var clientTodolist = _todoRepository.GetClientTodolist(userId, todolistId);
+            var clientTodolist = _todoRepository.GetClientTodolistAsync(userId, todolistId);
 
             if (clientTodolist is null) return false;
 

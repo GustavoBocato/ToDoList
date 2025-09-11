@@ -24,7 +24,7 @@ namespace ToDoListApp.Services
 
         public bool ClientEmailAlreadyTaken(string email)
         {
-            if (_todoRepository.GetClientByEmail(email) is not null)
+            if (_todoRepository.GetClientByEmailAsync(email) is not null)
                 return true;
 
             return false;
@@ -32,7 +32,7 @@ namespace ToDoListApp.Services
 
         public Client ValidateLogin(string email, string password)
         {
-            Client client = _todoRepository.GetClientByEmail(email);
+            Client client = _todoRepository.GetClientByEmailAsync(email);
 
             if (client is null)
                 throw new ArgumentException("O email entrado não consta na nossa base de dados.");
@@ -50,32 +50,32 @@ namespace ToDoListApp.Services
         {
             var toDoList = _mapper.Map<TodoList>(toDoListDTO);
 
-            return _todoRepository.CreateToDoList(toDoList, clientId);
+            return _todoRepository.CreateToDoListAsync(toDoList, clientId);
         }
 
         public IEnumerable<TodoList> GetTodoListsByClientId(Guid clientId)
         {
-            return _todoRepository.GetTodoListsByClientId(clientId);
+            return _todoRepository.GetTodoListsByClientIdAsync(clientId);
         }
 
         public IEnumerable<TodoItem> GetTodoItemsByTodoListId(Guid id)
         {
-            return _todoRepository.GetTodoItemsByTodoListId(id);
+            return _todoRepository.GetTodoItemsByTodoListIdAsync(id);
         }
 
         public IEnumerable<Client> GetClientsFromTodoList(Guid todoListId)
         {
-            return _todoRepository.GetClientsFromTodoList(todoListId);
+            return _todoRepository.GetClientsFromTodoListAsync(todoListId);
         }
 
         public TEntity? Patch<TEntity, TPatchDTO>(Guid id, TPatchDTO patchDTO) where TEntity : class
         {
-            var entity = _todoRepository.GetById<TEntity>(id);
+            var entity = _todoRepository.GetByIdAsync<TEntity>(id);
 
             if (entity is not null)
             {
                 _mapper.Map(patchDTO, entity);
-                _todoRepository.SaveDbChanges();
+                _todoRepository.SaveDbChangesAsync();
             }
 
             return entity;
@@ -85,22 +85,22 @@ namespace ToDoListApp.Services
         {
             var entity = _mapper.Map<TEntity>(entityDTO);
 
-            return _todoRepository.Post<TEntity>(entity);
+            return _todoRepository.PostAsync<TEntity>(entity);
         }
 
         public TEntity? GetById<TEntity>(Guid id) where TEntity : class
         {
-            return _todoRepository.GetById<TEntity>(id);
+            return _todoRepository.GetByIdAsync<TEntity>(id);
         }
 
         public void DeleteById<TEntity>(Guid id) where TEntity : class
         {
-            _todoRepository.DeleteById<TEntity>(id);
+            _todoRepository.DeleteByIdAsync<TEntity>(id);
         }
 
         public bool EntityExists<TEntity>(Guid id) where TEntity : class
         {
-            var entity = _todoRepository.GetById<TEntity>(id);
+            var entity = _todoRepository.GetByIdAsync<TEntity>(id);
 
             return entity is not null;
         }

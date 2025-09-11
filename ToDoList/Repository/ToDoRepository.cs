@@ -1,4 +1,5 @@
-﻿using ToDoListApp.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using ToDoListApp.Data;
 using ToDoListApp.Models;
 
 namespace ToDoListApp.Repository
@@ -12,12 +13,12 @@ namespace ToDoListApp.Repository
             _dbContext = dbContext;
         }
 
-        public Client? GetClientByEmail(string email)
+        public async Task<Client?> GetClientByEmailAsync(string email)
         {
-            return _dbContext.Clients.AsQueryable().FirstOrDefault(c => c.Email == email);
+            return await _dbContext.Clients.FirstOrDefaultAsync(c => c.Email == email);
         }
 
-        public TodoList CreateToDoList(TodoList toDoList, Guid clientId)
+        public async Task<TodoList> CreateToDoListAsync(TodoList toDoList, Guid clientId)
         {
             var clientToDoList = new ClientTodoList()
             {
@@ -28,42 +29,42 @@ namespace ToDoListApp.Repository
 
             _dbContext.TodoLists.Add(toDoList);
             _dbContext.ClientTodoLists.Add(clientToDoList);
-            _dbContext.SaveChanges();
-            return _dbContext.TodoLists.FirstOrDefault(tdl => tdl.Id == toDoList.Id);
+            await _dbContext.SaveChangesAsync();
+            return await _dbContext.TodoLists.FirstOrDefaultAsync(tdl => tdl.Id == toDoList.Id);
         }
 
-        public IEnumerable<TodoList> GetTodoListsByClientId(Guid clientId)
+        public async Task<IEnumerable<TodoList>> GetTodoListsByClientIdAsync(Guid clientId)
         {
-            return _dbContext.ClientTodoLists
+            return await _dbContext.ClientTodoLists
                 .Where(ctdl => ctdl.IdClient == clientId)
                 .Join(_dbContext.TodoLists,
                 ctdl => ctdl.IdTodolist,
                 tdl => tdl.Id,
                 (ctdl, tdl) => tdl)
-                .ToList();
+                .ToListAsync();
         }
 
-        public ClientTodoList? GetClientTodolist(Guid clientId, Guid todolistId)
+        public async Task<ClientTodoList?> GetClientTodolistAsync(Guid clientId, Guid todolistId)
         {
-            return _dbContext.ClientTodoLists
+            return await _dbContext.ClientTodoLists
                 .Where(ctdl => ctdl.IdClient == clientId && ctdl.IdTodolist == todolistId)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
         }
 
-        public void SaveDbChanges()
+        public async Task SaveDbChangesAsync()
         {
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
-        public IEnumerable<TodoItem> GetTodoItemsByTodoListId(Guid id)
+        public async Task<IEnumerable<TodoItem>> GetTodoItemsByTodoListIdAsync(Guid id)
         {
-            return _dbContext.TodoItems.Where(tdi => tdi.IdTodolist == id)
-                .ToList();
+            return await _dbContext.TodoItems.Where(tdi => tdi.IdTodolist == id)
+                .ToListAsync();
         }
 
-        public IEnumerable<Client> GetClientsFromTodoList(Guid todoListId) 
+        public async Task<IEnumerable<Client>> GetClientsFromTodoListAsync(Guid todoListId) 
         {
-            return _dbContext.ClientTodoLists
+            return await _dbContext.ClientTodoLists
                 .Where(ctl => ctl.IdTodolist == todoListId)
                 .Join
                 (
@@ -72,31 +73,31 @@ namespace ToDoListApp.Repository
                     c => c.Id,
                     (ctl, c) => c
                 )
-                .ToList();
+                .ToListAsync();
         }
 
-        public TEntity? GetById<TEntity>(Guid id) where TEntity : class
+        public async Task<TEntity?> GetByIdAsync<TEntity>(Guid id) where TEntity : class
         {
-            return _dbContext.Set<TEntity>().Find(id);
+            return await _dbContext.Set<TEntity>().FindAsync(id);
         }
 
-        public TEntity Post<TEntity>(TEntity entity) where TEntity : class
+        public async Task<TEntity> PostAsync<TEntity>(TEntity entity) where TEntity : class
         {
             _dbContext.Set<TEntity>().Add(entity);
-            _dbContext.SaveChanges();
-            _dbContext.Entry(entity).Reload();
+            await _dbContext.SaveChangesAsync();
+            await _dbContext.Entry(entity).ReloadAsync();
 
             return entity;
         }
 
-        public void DeleteById<TEntity>(Guid id) where TEntity: class
+        public async Task DeleteByIdAsync<TEntity>(Guid id) where TEntity: class
         {
-            var entity = GetById<TEntity>(id);
+            var entity = await GetByIdAsync<TEntity>(id);
 
             if(entity is not null)
             {
                 _dbContext.Set<TEntity>().Remove(entity);
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             }
         }
     }
