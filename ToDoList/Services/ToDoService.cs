@@ -17,22 +17,22 @@ namespace ToDoListApp.Services
             _mapper = mapper;
         }
 
-        public bool ValidateClientRegistration(PostClientDTO client)
+        public async Task<bool> ValidateClientRegistration(PostClientDTO client)
         {
-            return !ClientEmailAlreadyTaken(client.Email);
+            return !await ClientEmailAlreadyTaken(client.Email);
         }
 
-        public bool ClientEmailAlreadyTaken(string email)
+        public async Task<bool> ClientEmailAlreadyTaken(string email)
         {
-            if (_todoRepository.GetClientByEmailAsync(email) is not null)
+            if (await _todoRepository.GetClientByEmailAsync(email) is not null)
                 return true;
 
             return false;
         }
 
-        public Client ValidateLogin(string email, string password)
+        public async Task<Client> ValidateLogin(string email, string password)
         {
-            Client client = _todoRepository.GetClientByEmailAsync(email);
+            Client client = await _todoRepository.GetClientByEmailAsync(email);
 
             if (client is null)
                 throw new ArgumentException("O email entrado não consta na nossa base de dados.");
@@ -46,61 +46,61 @@ namespace ToDoListApp.Services
             return client;
         }
 
-        public TodoList CreateToDoList(PostTodoListDTO toDoListDTO, Guid clientId)
+        public async Task<TodoList> CreateToDoList(PostTodoListDTO toDoListDTO, Guid clientId)
         {
             var toDoList = _mapper.Map<TodoList>(toDoListDTO);
 
-            return _todoRepository.CreateToDoListAsync(toDoList, clientId);
+            return await _todoRepository.CreateToDoListAsync(toDoList, clientId);
         }
 
-        public IEnumerable<TodoList> GetTodoListsByClientId(Guid clientId)
+        public async Task<IEnumerable<TodoList>> GetTodoListsByClientId(Guid clientId)
         {
-            return _todoRepository.GetTodoListsByClientIdAsync(clientId);
+            return await _todoRepository.GetTodoListsByClientIdAsync(clientId);
         }
 
-        public IEnumerable<TodoItem> GetTodoItemsByTodoListId(Guid id)
+        public async Task<IEnumerable<TodoItem>> GetTodoItemsByTodoListId(Guid id)
         {
-            return _todoRepository.GetTodoItemsByTodoListIdAsync(id);
+            return await _todoRepository.GetTodoItemsByTodoListIdAsync(id);
         }
 
-        public IEnumerable<Client> GetClientsFromTodoList(Guid todoListId)
+        public async Task<IEnumerable<Client>> GetClientsFromTodoList(Guid todoListId)
         {
-            return _todoRepository.GetClientsFromTodoListAsync(todoListId);
+            return await _todoRepository.GetClientsFromTodoListAsync(todoListId);
         }
 
-        public TEntity? Patch<TEntity, TPatchDTO>(Guid id, TPatchDTO patchDTO) where TEntity : class
+        public async Task<TEntity?> Patch<TEntity, TPatchDTO>(Guid id, TPatchDTO patchDTO) where TEntity : class
         {
-            var entity = _todoRepository.GetByIdAsync<TEntity>(id);
+            var entity = await _todoRepository.GetByIdAsync<TEntity>(id);
 
             if (entity is not null)
             {
                 _mapper.Map(patchDTO, entity);
-                _todoRepository.SaveDbChangesAsync();
+                await _todoRepository.SaveDbChangesAsync();
             }
 
             return entity;
         }
 
-        public TEntity Post<TEntity, TEntityDTO>(TEntityDTO entityDTO) where TEntity : class
+        public async Task<TEntity> Post<TEntity, TEntityDTO>(TEntityDTO entityDTO) where TEntity : class
         {
             var entity = _mapper.Map<TEntity>(entityDTO);
 
-            return _todoRepository.PostAsync<TEntity>(entity);
+            return await _todoRepository.PostAsync<TEntity>(entity);
         }
 
-        public TEntity? GetById<TEntity>(Guid id) where TEntity : class
+        public async Task<TEntity?> GetById<TEntity>(Guid id) where TEntity : class
         {
-            return _todoRepository.GetByIdAsync<TEntity>(id);
+            return await _todoRepository.GetByIdAsync<TEntity>(id);
         }
 
-        public void DeleteById<TEntity>(Guid id) where TEntity : class
+        public async Task DeleteById<TEntity>(Guid id) where TEntity : class
         {
-            _todoRepository.DeleteByIdAsync<TEntity>(id);
+            await _todoRepository.DeleteByIdAsync<TEntity>(id);
         }
 
-        public bool EntityExists<TEntity>(Guid id) where TEntity : class
+        public async Task<bool> EntityExistsAsync<TEntity>(Guid id) where TEntity : class
         {
-            var entity = _todoRepository.GetByIdAsync<TEntity>(id);
+            var entity = await _todoRepository.GetByIdAsync<TEntity>(id);
 
             return entity is not null;
         }

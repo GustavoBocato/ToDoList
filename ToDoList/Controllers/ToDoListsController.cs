@@ -27,7 +27,7 @@ namespace ToDoListApp.Controllers
         {
             var clientId = GetClientIdFromUser();
 
-            if (!_todoService.EntityExists<Client>(clientId)) return BadRequest("O usuário a criar a lista de " +
+            if (!_todoService.EntityExistsAsync<Client>(clientId)) return BadRequest("O usuário a criar a lista de " +
                 "afazeres não existe na nossa base de dados.");
 
             return Ok(_todoService.CreateToDoList(toDoListDTO, clientId));
@@ -79,7 +79,7 @@ namespace ToDoListApp.Controllers
             if(!_authService.IsUserIncludedOnAList(clientId, todoListId))
                 return Unauthorized("Usuário não pode ver os outros incluidos em uma lista a qual não pertence.");
 
-            if (!_todoService.EntityExists<TodoList>(todoListId)) return NotFound("Lista de afazeres não existe" +
+            if (!_todoService.EntityExistsAsync<TodoList>(todoListId)) return NotFound("Lista de afazeres não existe" +
                 " nas nosssas bases de dados.");
 
             return Ok(_todoService.GetClientsFromTodoList(todoListId));
