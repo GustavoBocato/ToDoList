@@ -23,21 +23,21 @@ namespace ToDoListApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult PostClient(PostClientDTO clientDTO)
+        public async Task<ActionResult> PostClient(PostClientDTO clientDTO)
         {
-            if (!_todoService.ValidateClientRegistration(clientDTO))
+            if (!await _todoService.ValidateClientRegistration(clientDTO))
                 return BadRequest("O email do cliente a ser registrado já foi cadastrado no sistema.");
 
-            var client = _todoService.Post<Client, PostClientDTO>(clientDTO);
+            var client = await _todoService.Post<Client, PostClientDTO>(clientDTO);
             return Ok(new { Token = _jwtTokenService.GenerateToken(client) });
         }
 
         [HttpPost("login")]
-        public ActionResult Login(string email, string password)
+        public async Task<ActionResult> Login(string email, string password)
         {
             try
             {
-                var client = _todoService.ValidateLogin(email, password);
+                var client = await _todoService.ValidateLogin(email, password);
                 return Ok(new { Token = _jwtTokenService.GenerateToken(client) });
             }
             catch (Exception ex)
@@ -48,17 +48,17 @@ namespace ToDoListApp.Controllers
 
         [Authorize]
         [HttpPatch]
-        public ActionResult Patch(PatchClientDTO patchClientDTO)
+        public async Task<ActionResult> Patch(PatchClientDTO patchClientDTO)
         {
             var clientId = GetClientIdFromUser();
             var newEmail = patchClientDTO.Email;
 
-            if (newEmail is not null && _todoService.ClientEmailAlreadyTaken(newEmail))
+            if (newEmail is not null && await _todoService.ClientEmailAlreadyTaken(newEmail))
             {
                 return BadRequest("O email a ser registrado já pertence a um usuário.");
             }
 
-            var result = _todoService.Patch<Client, PatchClientDTO>(clientId, patchClientDTO);
+            var result = await _todoService.Patch<Client, PatchClientDTO>(clientId, patchClientDTO);
 
             if (result is null)
             {

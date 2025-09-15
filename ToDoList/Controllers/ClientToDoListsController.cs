@@ -22,23 +22,23 @@ namespace ToDoListApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post(PostClientTodoListDTO clientTodolistDTO)
+        public async Task<ActionResult> Post(PostClientTodoListDTO clientTodolistDTO)
         {
-            if (!_authService.CanUserPostClientTodolist(GetClientIdFromUser(), clientTodolistDTO.IdTodolist))
+            if (!await _authService.CanUserPostClientTodolist(GetClientIdFromUser(), clientTodolistDTO.IdTodolist))
                 return Forbid("O usuário não é dono da lista de afazeres, logo não pode adcionar outros" +
                     " clientes a lista.");
 
-            return Ok(_todoService.Post<ClientTodoList, PostClientTodoListDTO>(clientTodolistDTO));
+            return Ok(await _todoService.Post<ClientTodoList, PostClientTodoListDTO>(clientTodolistDTO));
         }
 
         [HttpDelete]
-        public ActionResult Delete(Guid id)
+        public async Task<ActionResult> Delete(Guid id)
         {
-            if (!_authService.CanUserDeleteClientTodolist(GetClientIdFromUser(), id))
+            if (!await _authService.CanUserDeleteClientTodolist(GetClientIdFromUser(), id))
                 return Forbid("O usuário não pode remover o cliente da lista de afazeres. Porque não é nem dono" +
                     " da lista e nem é o cliente a ser removido.");
 
-            _todoService.DeleteById<ClientTodoList>(id);
+            await _todoService.DeleteById<ClientTodoList>(id);
 
             return Ok();
         }

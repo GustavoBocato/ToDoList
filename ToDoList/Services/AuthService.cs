@@ -12,31 +12,31 @@ namespace ToDoListApp.Services
             _todoRepository = todoRepository;
         }
 
-        public bool IsUserOwnerOfTodolist(Guid userId, Guid todolistId)
+        public async Task<bool> IsUserOwnerOfTodolist(Guid userId, Guid todolistId)
         {
-            var clientTodolist = _todoRepository.GetClientTodolistAsync(userId, todolistId);
+            var clientTodolist = await _todoRepository.GetClientTodolistAsync(userId, todolistId);
 
             if (clientTodolist is null) return false;
 
             return clientTodolist.IsOwner;
         }
 
-        public bool CanUserPostClientTodolist(Guid userId, Guid todolistId)
+        public async Task<bool> CanUserPostClientTodolist(Guid userId, Guid todolistId)
         {
-            return IsUserOwnerOfTodolist(userId, todolistId);
+            return await IsUserOwnerOfTodolist(userId, todolistId);
         }
 
-        public bool CanUserDeleteClientTodolist(Guid userId, Guid clientTodolistId)
+        public async Task<bool> CanUserDeleteClientTodolist(Guid userId, Guid clientTodolistId)
         {
-            var relationshipToBeDeleted = _todoRepository.GetByIdAsync<ClientTodoList>(clientTodolistId);
+            var relationshipToBeDeleted = await _todoRepository.GetByIdAsync<ClientTodoList>(clientTodolistId);
 
             return userId == relationshipToBeDeleted.IdClient ||
-                IsUserOwnerOfTodolist(userId, relationshipToBeDeleted.IdTodolist);
+                await IsUserOwnerOfTodolist(userId, relationshipToBeDeleted.IdTodolist);
         }
 
-        public bool IsUserIncludedOnAList(Guid userId, Guid todolistId) 
+        public async Task<bool> IsUserIncludedOnAList(Guid userId, Guid todolistId) 
         {
-            var clientTodolist = _todoRepository.GetClientTodolistAsync(userId, todolistId);
+            var clientTodolist = await _todoRepository.GetClientTodolistAsync(userId, todolistId);
 
             if (clientTodolist is null) return false;
 

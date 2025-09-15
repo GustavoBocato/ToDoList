@@ -23,44 +23,44 @@ namespace ToDoListApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult PostToDoList(PostTodoListDTO toDoListDTO)
+        public async Task<ActionResult> PostToDoList(PostTodoListDTO toDoListDTO)
         {
             var clientId = GetClientIdFromUser();
 
-            if (!_todoService.EntityExistsAsync<Client>(clientId)) return BadRequest("O usuário a criar a lista de " +
+            if (!await _todoService.EntityExistsAsync<Client>(clientId)) return BadRequest("O usuário a criar a lista de " +
                 "afazeres não existe na nossa base de dados.");
 
-            return Ok(_todoService.CreateToDoList(toDoListDTO, clientId));
+            return Ok(await _todoService.CreateToDoList(toDoListDTO, clientId));
         }
 
         [HttpGet("AllTodoListsFromClient")]
-        public ActionResult GetToDoLists()
+        public async Task<ActionResult> GetToDoLists()
         {
             var clientId = GetClientIdFromUser();
-            return Ok(_todoService.GetTodoListsByClientId(clientId));
+            return Ok(await _todoService.GetTodoListsByClientId(clientId));
         }
 
         [HttpDelete]
-        public ActionResult DeleteTodoList(Guid id) 
+        public async Task<ActionResult> DeleteTodoList(Guid id) 
         {
             var clientId = GetClientIdFromUser();
 
-            if(!_authService.IsUserOwnerOfTodolist(clientId, id))
+            if(!await _authService.IsUserOwnerOfTodolist(clientId, id))
                 return Unauthorized("Usuário não tem permissão para deletar lista de afazeres.");
 
-            _todoService.DeleteById<TodoList>(id);
+            await _todoService.DeleteById<TodoList>(id);
             return Ok("Lista de afazeres deletada com successo.");
         }
 
         [HttpPatch]
-        public ActionResult Patch(Guid id, [FromBody] PatchTodoListDTO todolist)
+        public async Task<ActionResult> Patch(Guid id, [FromBody] PatchTodoListDTO todolist)
         {
             var clientId = GetClientIdFromUser();
 
-            if (!_authService.IsUserOwnerOfTodolist(clientId, id))
+            if (!await _authService.IsUserOwnerOfTodolist(clientId, id))
                 return Unauthorized("Usuário não pode modificar lista de afazeres de que não é dono.");
 
-            var result = _todoService.Patch<TodoList, PatchTodoListDTO>(id, todolist);
+            var result = await _todoService.Patch<TodoList, PatchTodoListDTO>(id, todolist);
 
             if (result == null)
             {
@@ -72,17 +72,17 @@ namespace ToDoListApp.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetClientsFromTodoList(Guid todoListId)
+        public async Task<ActionResult> GetClientsFromTodoList(Guid todoListId)
         {
             var clientId = GetClientIdFromUser();
 
-            if(!_authService.IsUserIncludedOnAList(clientId, todoListId))
+            if(!await _authService.IsUserIncludedOnAList(clientId, todoListId))
                 return Unauthorized("Usuário não pode ver os outros incluidos em uma lista a qual não pertence.");
 
-            if (!_todoService.EntityExistsAsync<TodoList>(todoListId)) return NotFound("Lista de afazeres não existe" +
+            if (!await _todoService.EntityExistsAsync<TodoList>(todoListId)) return NotFound("Lista de afazeres não existe" +
                 " nas nosssas bases de dados.");
 
-            return Ok(_todoService.GetClientsFromTodoList(todoListId));
+            return Ok(await _todoService.GetClientsFromTodoList(todoListId));
         }
     }
 }
