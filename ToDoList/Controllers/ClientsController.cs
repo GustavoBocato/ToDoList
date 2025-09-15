@@ -47,7 +47,7 @@ namespace ToDoListApp.Controllers
         }
 
         [Authorize]
-        [HttpPatch]
+        [HttpPatch("me")]
         public async Task<ActionResult> Patch(PatchClientDTO patchClientDTO)
         {
             var clientId = GetClientIdFromUser();
@@ -66,6 +66,15 @@ namespace ToDoListApp.Controllers
             }
 
             return Ok(result);
+        }
+
+        [Authorize]
+        [HttpDelete("me")]
+        public async Task<ActionResult> Delete()
+        {
+            var clientId = GetClientIdFromUser();
+            await _todoService.DeleteById<Client>(clientId);
+            return Ok("O registro de cliente foi deletado com sucesso.");
         }
     }
 }

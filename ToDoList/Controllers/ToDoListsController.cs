@@ -74,6 +74,7 @@ namespace ToDoListApp.Controllers
         [HttpGet]
         public async Task<ActionResult> GetClientsFromTodoList(Guid todoListId)
         {
+            // analisar mover esse endpoint para a controller de clients
             var clientId = GetClientIdFromUser();
 
             if(!await _authService.IsUserIncludedOnAList(clientId, todoListId))

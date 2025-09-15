@@ -31,7 +31,7 @@ namespace ToDoListApp.Controllers
             return Ok(await _todoService.Post<ClientTodoList, PostClientTodoListDTO>(clientTodolistDTO));
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(Guid id)
         {
             if (!await _authService.CanUserDeleteClientTodolist(GetClientIdFromUser(), id))
