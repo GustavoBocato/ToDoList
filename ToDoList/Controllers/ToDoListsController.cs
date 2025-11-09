@@ -33,14 +33,14 @@ namespace ToDoListApp.Controllers
             return Ok(await _todoService.CreateToDoList(toDoListDTO, clientId));
         }
 
-        [HttpGet("AllTodoListsFromClient")]
-        public async Task<ActionResult> GetToDoLists()
+        [HttpGet]
+        public async Task<ActionResult> GetToDoListsFromUser()
         {
             var clientId = GetClientIdFromUser();
             return Ok(await _todoService.GetTodoListsByClientId(clientId));
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteTodoList(Guid id) 
         {
             var clientId = GetClientIdFromUser();
@@ -71,7 +71,7 @@ namespace ToDoListApp.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
+        [HttpGet("{todoListId}")]
         public async Task<ActionResult> GetClientsFromTodoList(Guid todoListId)
         {
             // analisar mover esse endpoint para a controller de clients
