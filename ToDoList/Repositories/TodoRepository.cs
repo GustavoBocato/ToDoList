@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TodoListApp.Repositories;
 using ToDoListApp.Data;
 using ToDoListApp.Models;
 
 namespace ToDoListApp.Repository
 {
-    public class TodoRepository
+    public class TodoRepository : ITodoRepository
     {
         private readonly ToDoDbContext _dbContext;
 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using TodoListApp.Repositories;
 using ToDoListApp.Models;
 using ToDoListApp.Models.DTOs;
 using ToDoListApp.Repository;
@@ -8,10 +9,10 @@ namespace ToDoListApp.Services
 {
     public class TodoService
     {
-        private readonly TodoRepository _todoRepository;
+        private readonly ITodoRepository _todoRepository;
         private readonly IMapper _mapper;
 
-        public TodoService(TodoRepository toDoRepository, IMapper mapper)
+        public TodoService(ITodoRepository toDoRepository, IMapper mapper)
         {
             _todoRepository = toDoRepository;
             _mapper = mapper;
