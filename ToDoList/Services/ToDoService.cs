@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using TodoListApp.Repositories;
+using TodoListApp.Services;
 using ToDoListApp.Models;
 using ToDoListApp.Models.DTOs;
-using ToDoListApp.Repository;
 
 namespace ToDoListApp.Services
 {
-    public class TodoService
+    public class TodoService : ITodoService
     {
         private readonly ITodoRepository _todoRepository;
         private readonly IMapper _mapper;
@@ -33,7 +33,7 @@ namespace ToDoListApp.Services
 
         public async Task<Client> ValidateLogin(string email, string password)
         {
-            Client client = await _todoRepository.GetClientByEmailAsync(email);
+            Client? client = await _todoRepository.GetClientByEmailAsync(email);
 
             if (client is null)
                 throw new ArgumentException("O email entrado não consta na nossa base de dados.");
@@ -99,7 +99,7 @@ namespace ToDoListApp.Services
             await _todoRepository.DeleteByIdAsync<TEntity>(id);
         }
 
-        public async Task<bool> EntityExistsAsync<TEntity>(Guid id) where TEntity : class
+        public async Task<bool> EntityExists<TEntity>(Guid id) where TEntity : class
         {
             var entity = await _todoRepository.GetByIdAsync<TEntity>(id);
 

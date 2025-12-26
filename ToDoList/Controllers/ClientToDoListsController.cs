@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TodoListApp.Services;
 using ToDoListApp.Models;
 using ToDoListApp.Models.DTOs;
 using ToDoListApp.Services;
@@ -12,10 +13,10 @@ namespace ToDoListApp.Controllers
     [ApiController]
     public class ClientTodolistsController : BaseController
     {
-        private readonly TodoService _todoService;
-        private readonly AuthService _authService;
+        private readonly ITodoService _todoService;
+        private readonly IAuthService _authService;
 
-        public ClientTodolistsController(TodoService toDoService, AuthService authService)
+        public ClientTodolistsController(ITodoService toDoService, IAuthService authService)
         {
             _todoService = toDoService;
             _authService = authService;

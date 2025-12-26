@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TodoListApp.Models.DTOs;
+using TodoListApp.Services;
 using ToDoListApp.Models;
 using ToDoListApp.Models.DTOs;
 using ToDoListApp.Services;
@@ -12,10 +13,10 @@ namespace ToDoListApp.Controllers
     [Route("api/[controller]")]
     public class ClientsController : BaseController
     {
-        private readonly TodoService _todoService;
+        private readonly ITodoService _todoService;
         private readonly JwtTokenService _jwtTokenService;
 
-        public ClientsController(TodoService toDoService,
+        public ClientsController(ITodoService toDoService,
             JwtTokenService jwtTokenService)
         {
             _todoService = toDoService;
@@ -26,7 +27,7 @@ namespace ToDoListApp.Controllers
         public async Task<ActionResult> PostClient(PostClientDTO clientDTO)
         {
             if (!await _todoService.ValidateClientRegistration(clientDTO))
-                return BadRequest("O email do cliente a ser registrado já foi cadastrado no sistema.");
+                return BadRequest("O email do cliente a ser registrado jï¿½ foi cadastrado no sistema.");
 
             var client = await _todoService.Post<Client, PostClientDTO>(clientDTO);
             return Ok(new { Token = _jwtTokenService.GenerateToken(client) });
@@ -55,14 +56,14 @@ namespace ToDoListApp.Controllers
 
             if (newEmail is not null && await _todoService.ClientEmailAlreadyTaken(newEmail))
             {
-                return BadRequest("O email a ser registrado já pertence a um usuário.");
+                return BadRequest("O email a ser registrado jï¿½ pertence a um usuï¿½rio.");
             }
 
             var result = await _todoService.Patch<Client, PatchClientDTO>(clientId, patchClientDTO);
 
             if (result is null)
             {
-                return NotFound("Cliente a ser modificado não foi encontrado nas nossas bases.");
+                return NotFound("Cliente a ser modificado nï¿½o foi encontrado nas nossas bases.");
             }
 
             return Ok(result);

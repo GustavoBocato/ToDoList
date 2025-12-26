@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using TodoListApp.Repositories;
+using TodoListApp.Services;
 using ToDoListApp.Data;
 using ToDoListApp.Mappings;
 using ToDoListApp.Repository;
@@ -21,9 +23,9 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ToDoDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-builder.Services.AddTransient<TodoService>();
-builder.Services.AddTransient<AuthService>();
-builder.Services.AddTransient<TodoRepository>();
+builder.Services.AddScoped<ITodoService, TodoService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITodoRepository, TodoRepository>();
 builder.Services.AddAutoMapper(typeof(Mapping));
 
 builder.Services.AddAuthentication(options =>
@@ -69,14 +71,12 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddSingleton<JwtTokenService>(provider =>
+builder.Services.AddSingleton(provider =>
 {
     return new JwtTokenService(secretKey, issuer, audience);
 });
 
 builder.Services.AddAuthorization();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {

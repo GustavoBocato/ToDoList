@@ -1,13 +1,14 @@
 ﻿using ToDoListApp.Models;
-using ToDoListApp.Repository;
+using TodoListApp.Repositories;
+using TodoListApp.Services;
 
 namespace ToDoListApp.Services
 {
-    public class AuthService
+    public class AuthService : IAuthService
     {
-        private readonly TodoRepository _todoRepository;
+        private readonly ITodoRepository _todoRepository;
 
-        public AuthService(TodoRepository todoRepository)
+        public AuthService(ITodoRepository todoRepository)
         {
             _todoRepository = todoRepository;
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TodoListApp.Models.DTOs;
+using TodoListApp.Services;
 using ToDoListApp.Models;
 using ToDoListApp.Models.DTOs;
 using ToDoListApp.Services;
@@ -13,10 +14,10 @@ namespace ToDoListApp.Controllers
     [ApiController]
     public class TodoListsController : BaseController
     {
-        private readonly TodoService _todoService;
-        private readonly AuthService _authService;
+        private readonly ITodoService _todoService;
+        private readonly IAuthService _authService;
 
-        public TodoListsController(TodoService toDoService, AuthService authService)
+        public TodoListsController(ITodoService toDoService, IAuthService authService)
         {
             _todoService = toDoService;
             _authService = authService;
@@ -27,7 +28,7 @@ namespace ToDoListApp.Controllers
         {
             var clientId = GetClientIdFromUser();
 
-            if (!await _todoService.EntityExistsAsync<Client>(clientId)) return BadRequest("O usuário a criar a lista de " +
+            if (!await _todoService.EntityExists<Client>(clientId)) return BadRequest("O usuário a criar a lista de " +
                 "afazeres não existe na nossa base de dados.");
 
             return Ok(await _todoService.CreateToDoList(toDoListDTO, clientId));
@@ -80,7 +81,7 @@ namespace ToDoListApp.Controllers
             if(!await _authService.IsUserIncludedOnAList(clientId, todoListId))
                 return Unauthorized("Usuário não pode ver os outros incluidos em uma lista a qual não pertence.");
 
-            if (!await _todoService.EntityExistsAsync<TodoList>(todoListId)) return NotFound("Lista de afazeres não existe" +
+            if (!await _todoService.EntityExists<TodoList>(todoListId)) return NotFound("Lista de afazeres não existe" +
                 " nas nosssas bases de dados.");
 
             return Ok(await _todoService.GetClientsFromTodoList(todoListId));

@@ -35,5 +35,15 @@ namespace ToDoListApp.Models
             var hasher = new PasswordHasher<Client>();
             return hasher.HashPassword(this, value);
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not Client other)
+                return false;
+
+            return Id == other.Id;
+        }   
+
+        public override int GetHashCode() => Id.GetHashCode();
     }
 }
