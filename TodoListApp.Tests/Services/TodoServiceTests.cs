@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Moq;
+using TodoListApp.Models.DTOs;
 using TodoListApp.Repositories;
 using TodoListApp.Services;
 using ToDoListApp.Mappings;
@@ -165,17 +166,9 @@ namespace TodoListApp.Tests.Services
         [Fact]
         public async Task GetTodoListsByClientId_ShouldReturnListOfTodoLists()
         {
-            var name = "name";
-            var description = "description";
             var clientId = new Guid();
 
-            var todoList = new TodoList()
-            {
-                Name = name,
-                Description = description
-            };
-
-            List<TodoList> todoLists = [todoList];
+            List<TodoList> todoLists = new();
 
             _mockTodoRepository.Setup(r => r.GetTodoListsByClientIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(todoLists);
@@ -189,18 +182,9 @@ namespace TodoListApp.Tests.Services
         [Fact]
         public async Task GetTodoItemsByTodoListId_ShouldReturnListOfTodoLists()
         {
-            var name = "name";
-            var description = "description";
             var todoListId = new Guid();
 
-            var todoItem = new TodoItem()
-            {
-                Name = name,
-                Description = description,
-                IdTodolist = todoListId
-            };
-
-            List<TodoItem> todoItems = [todoItem];
+            List<TodoItem> todoItems = new();
 
             _mockTodoRepository.Setup(r => r.GetTodoItemsByTodoListIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(todoItems);
@@ -210,5 +194,38 @@ namespace TodoListApp.Tests.Services
             Assert.Equal(todoItems, result);
             Assert.IsType<List<TodoItem>>(result);
         }
+
+        [Fact]
+        public async Task GetClientsFromTodoList_ShouldReturnListOfClients()
+        {
+            var todoListId = new Guid();
+
+            List<Client> clients = new();
+
+            _mockTodoRepository.Setup(r => r.GetClientsFromTodoListAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(clients);
+
+            var result = await _todoService.GetClientsFromTodoList(todoListId);
+
+            Assert.Equal(clients, result);
+            Assert.IsType<List<Client>>(result);
+        }
+
+        [Fact]
+        public async Task Patch_ReturnsNull_WhenEntityDoesNotExist()
+        {
+            var id = Guid.NewGuid();
+            var patchDto = new PatchTodoItemDTO();
+
+            _mockTodoRepository
+                .Setup(r => r.GetByIdAsync<TodoItem>(It.IsAny<Guid>()))
+                .ReturnsAsync((TodoItem?)null);
+
+            var result = await _todoService.Patch<TodoItem, PatchTodoItemDTO>(id, patchDto);
+
+            Assert.Null(result);
+        }
+
+        // test the case where patchable entity exists in the db
     }
 }
