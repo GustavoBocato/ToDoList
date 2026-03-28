@@ -212,7 +212,7 @@ namespace TodoListApp.Tests.Services
         }
 
         [Fact]
-        public async Task Patch_ReturnsNull_WhenEntityDoesNotExist()
+        public async Task Patch_ReturnsNull_WhenEntityDoesNotExists()
         {
             var id = Guid.NewGuid();
             var patchDto = new PatchTodoItemDTO();
@@ -226,6 +226,51 @@ namespace TodoListApp.Tests.Services
             Assert.Null(result);
         }
 
-        // test the case where patchable entity exists in the db
+        [Theory]
+        [MemberData(nameof(PatchCases))]
+        public async Task Patch_ReturnsEntity_WhenEntityExists<TEntity, TPatchDTO>(TEntity entity, TPatchDTO patchDTO) where TEntity : class
+        {
+            var id = Guid.NewGuid();
+
+            _mockTodoRepository
+                .Setup(r => r.GetByIdAsync<TEntity>(It.IsAny<Guid>()))
+                .ReturnsAsync(entity);
+
+            var result = await _todoService.Patch<TEntity, TPatchDTO>(id, patchDTO);
+
+            Assert.Equal("b", result.Name);
+            Assert.Equal(entity, result);
+
+            _mockTodoRepository.Verify(
+                r => r.SaveDbChangesAsync(),
+                Times.Once);
+        }
+
+        public static IEnumerable<Object[]> PatchCases(){
+            yield return new Object[]{
+                new Client() {
+                    Name = "a"
+                },
+                new PatchClientDTO() {
+                    Name = "b"
+                }
+            };
+            yield return new Object[]{
+                new TodoList() {
+                    Name = "a"
+                },
+                new PatchTodoListDTO() {
+                    Name = "b"
+                }
+            };
+            yield return new Object[]{
+                new TodoItem() {
+                    Name = "a"
+                },
+                new PatchTodoItemDTO() {
+                    Name = "b"
+                }
+            };
+        }
     }
 }
