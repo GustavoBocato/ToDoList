@@ -3,10 +3,8 @@ using Moq;
 using TodoListApp.Models.DTOs;
 using TodoListApp.Repositories;
 using TodoListApp.Services;
-using ToDoListApp.Mappings;
-using ToDoListApp.Models;
-using ToDoListApp.Models.DTOs;
-using ToDoListApp.Services;
+using TodoListApp.Mappings;
+using TodoListApp.Models;
 
 namespace TodoListApp.Tests.Services
 {
@@ -137,7 +135,7 @@ namespace TodoListApp.Tests.Services
         }
 
         [Fact]
-        public async Task CreateToDoList_ShouldReturnTodoList()
+        public async Task CreateTodoList_ShouldReturnTodoList()
         {
             var name = "name";
             var description = "description";
@@ -154,10 +152,10 @@ namespace TodoListApp.Tests.Services
                 Description = description
             };
 
-            _mockTodoRepository.Setup(r => r.CreateToDoListAsync(It.IsAny<TodoList>(), It.IsAny<Guid>()))
+            _mockTodoRepository.Setup(r => r.CreateTodoListAsync(It.IsAny<TodoList>(), It.IsAny<Guid>()))
                 .ReturnsAsync(todoList);
 
-            var result = await _todoService.CreateToDoList(todoListDTO, clientId);
+            var result = await _todoService.CreateTodoList(todoListDTO, clientId);
 
             Assert.Equal(todoList, result);
             Assert.IsType<TodoList>(result);
